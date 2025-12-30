@@ -8,98 +8,93 @@
 
 题目中的 $f(x)$ 是没有具体的表达式，读者要从`可导`条件出发，发掘出有用信息以便解题使用。这里 $f(x)$ 没有具体形式，就意味着，只要证明这个结论，就能解决一大堆的问题。
 
-
 ### 面积问题与穷竭法
 
 教材中提到了古希腊人用「穷竭法」求取圆的面积，增加多边形的边数可以求取到更为精确的面积。具体怎么操作，书中并未展开。
 
 回到两千多年前，数学工具远不如今天丰富。他们至少掌握以下的知识：
 
-- 三角线面积
+- 三角形面积
 - 二等分角
-- **特定角度**的正弦值，例如 $ \sin 30^{\circ} $
 - 开根号求取近似值，例如 $ \sqrt{2} \approx 1.414 $
 
-因此，穷竭法必须足够巧妙，简单。
+在工具限制的条件下，穷竭法必须足够巧妙，简单。
 
-![](./infinite.svg)
+正 $n$ 边形的面积，而是可以写成 $ n $ 个等腰三角形的面积
 
+$$ S_n = n \times (\text{单个等腰三角形的面积}) $$
 
-```asy
-import graph;
-import geometry;
+而单个等腰三角形的面积，又可以表示为：
 
-size(400);
+$$
+\frac{1}{2} \times (\text{底边}) \times (\text{高})
+$$
 
-// Define circle center and radius
-pair O = (0, 0);
-real r = 3;
+于是问题被自然地拆成了两个量：
 
-// Draw circle
-draw(circle(O, r), linewidth(1.2) + blue);
+- 边长 $a_n$
+- 对应的高 $h_n$
 
-// Draw regular hexagon
-path hexagon;
-pair[] hexPoints;
-for (int i = 0; i < 6; ++i) {
-    hexPoints.push(r * dir(90 + i * 60));
-}
-hexagon = hexPoints[0];
-for (int i = 1; i < 6; ++i) {
-    hexagon = hexagon -- hexPoints[i];
-}
-hexagon = hexagon -- cycle;
-draw(hexagon, linewidth(0.8) + gray(0.3));
+根据勾股定理，$ h_n = \sqrt{r^2-a_n^2} $。其实在这个问题中，只需要求取边长 $ a_n $就能计算出圆的面积。
 
-// Mark center
-dot(O, linewidth(4));
-label("$O$", O, SW);
+![](./circle1.svg)
 
-// Select one side of hexagon
-pair A = hexPoints[0];  
-pair B = hexPoints[1];
-Label label_circle=Label("$r=1$");
-draw(O -- A, L=  label_circle, linewidth(1) + red);
-draw(O -- B, linewidth(1) + red);
-draw(A -- B, linewidth(1.2) + red);
+以上图为例，让我们来看正 $2n$ 边形中新边长 $AC$ 的如何计算。取正 $n$ 边形的一条边 $AB$，其对应的等腰三角形为
+$\triangle AOB$。
 
-// Mark triangle vertices
-dot(A, linewidth(4) + red);
-dot(B, linewidth(4) + red);
-label("$A$", A, dir(90));
-label("$B$", B, dir(180));
+设 $M$ 为 $AB$ 的中点，则：
 
-// Draw height (median) of isosceles triangle OAB
-pair M = (A + B) / 2;
-draw(O -- M, linewidth(1) + deepgreen + dashed);
-dot(M, linewidth(4) + deepgreen);
-label("$M$", M, dir(260));
+- $OM \perp AB$
+- $AM = \dfrac{a_n}{2}$
 
-// Mark apothem
-label("$h$", O + 0.6*(M-O), E + 0.2*N);
+因此，在直角三角形 $\triangle OMA$ 中，有
 
-// Draw right angle mark at M
-real marksize = 0.2;
-pair dir1 = unit(O - M);
-pair dir2 = unit(A - M);
-draw(M + marksize*dir1 -- M + marksize*dir1 + marksize*dir2 -- M + marksize*dir2, linewidth(0.6) + deepgreen);
+$$
+OM = \sqrt{1 - \left(\frac{a_n}{2}\right)^2}
+$$
 
-// Draw dodecagon segment
-pair C = r * dir(90 + 30); // New vertex of regular 12-gon
-draw(O -- C, linewidth(0.8) + orange + dashed);
-draw(A -- C, linewidth(0.8) + orange + dashed);
-dot(C, linewidth(3) + orange);
-label("$C$", C, dir(90));
+延长 $OM$ 与圆交于 $C$，则
 
-// Fill dodecagon segment (triangle OAC)
-fill(O -- A -- C -- cycle, orange + opacity(0.15));
+$$
+MC = 1 - OM
+$$
 
-// Add angle mark at O between OA and OB
-draw("$60^\circ$",arc(O, 0.6, degrees(A-O), degrees(B-O)), linewidth(0.6) + red, Arrow(4));
-// label("$60^\circ$", O, NE);
-shipout(bbox(0.5cm));
-// Add border
-// draw((-5, -7.2) -- (5, -7.2) -- (5, 4.5) -- (-5, 4.5) -- cycle, linewidth(0.5) + gray(0.7));
-```
+又因为 $\triangle AMC$ 也是直角三角形，其斜边正是正 $2n$ 边形的边长 $AC$。
 
-### 切线问题
+$$
+\begin{aligned}
+a_{2n}^2
+&= AM^2 + MC^2 \\
+&= \left(\frac{a_n}{2}\right)^2
+ + \left(1 - \sqrt{1 - \left(\frac{a_n}{2}\right)^2}\right)^2 \\
+&= 2 - 2\sqrt{1 - \left(\frac{a_n}{2}\right)^2}
+\end{aligned}
+$$
+
+因此得到：
+
+$$
+a_{2n} = \sqrt{2 - 2\sqrt{1 - \left(\frac{a_n}{2}\right)^2}}
+$$
+
+我们知道，正六边形变成就是半径 $ r $，因此基于正六边形为基础，每次进行二等分，计算出边长，然后代入下方的公式计算面积和：
+
+$$
+s_{n}=\frac{n}{2} a_{n}\sqrt[]{a-a_{n}^{2}}
+$$
+
+| n   | 边长                 | 面积               |
+| --- | -------------------- | ------------------ |
+| 6   | 1                    | 2.598076211353316  |
+| 12  | 0.5176380902050415   | 3                  |
+| 24  | 0.26105238444010315  | 3.1058285412302484 |
+| 48  | 0.1308062584602861   | 3.1326286132812373 |
+| 96  | 0.06543816564355226  | 3.1393502030468663 |
+| 192 | 0.03272346325297355  | 3.141031950890509  |
+| 384 | 0.016362279207874253 | 3.141452472285461  |
+
+迭代 6 次后，就是很接近圆面积了。
+
+### 极限法求面积
+
+![](./circle2.svg)

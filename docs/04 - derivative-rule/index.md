@@ -7,5 +7,3 @@ import DocCardList from '@theme/DocCardList';
 test
 
 <DocCardList />
-
-
