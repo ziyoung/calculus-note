@@ -97,4 +97,54 @@ $$
 
 ### 极限法求面积
 
+从上文中可以看出，在没有计算机辅助的情况下，「穷竭法」的计算量很大。并且随着计算次数的增加，精度也会越来越差。如果采用「极限」的方式来计算圆面积，运算量减少的同时，我们还得到了一个精确值。
+
 ![](./circle2.svg)
+
+设圆半径为$r$，其内接正$n$边形面积可表示为
+
+$$
+S_n^{\text{内}} = n \cdot \frac{1}{2} \cdot r \cdot r\sin\frac{2\pi}{n}
+$$
+
+当边数$n$无限增大时，该面积列的极限即为圆面积。
+
+令$x = \dfrac{2\pi}{n}$，则当$n\to\infty$时，$x\to 0$，且$n = \dfrac{2\pi}{x}$。代入得
+
+$$
+\begin{aligned}
+\lim_{n\to\infty} S_n^{\text{内}} &= \frac{r^2}{2} \lim_{n\to\infty} n\sin\frac{2\pi}{n} \\
+&= \frac{r^2}{2} \lim_{x\to 0} \frac{2\pi}{x}\sin x \\
+&= \pi r^2 \lim_{x\to 0} \frac{\sin x}{x} = \pi r^{2}
+\end{aligned}
+
+
+$$
+
+为确保极限的唯一性，需同时考察外切正$n$边形面积
+
+$$
+S_n^{\text{外}} = n \cdot \frac{1}{2} \cdot r \cdot \frac{r}{\tan\frac{2\pi}{n}}
+$$
+
+类似的，令$x = \dfrac{2\pi}{n}$，则
+
+$$
+\begin{aligned}
+\lim_{n\to\infty} S_n^{\text{外}} &= \frac{r^2}{2} \lim_{n\to\infty} \frac{n}{\tan\frac{2\pi}{n}} \\
+&= \frac{r^2}{2} \lim_{x\to 0} \frac{2\pi}{x\tan x} \\
+&= \pi r^2 \lim_{x\to 0} \frac{x}{\tan x}
+\end{aligned}
+$$
+
+由等价无穷小关系 $ x \sim \sin x  \sim  \tan x $ 推出
+
+$$
+\lim_{n\to\infty} S_n^{\text{外}} = \pi r^2
+$$
+上述推导揭示了微积分的深层内涵：
+
+内接多边形面积从下方逼近，外切多边形从上方逼近，二者极限相同，确立了圆面积的唯一性。极限将无限过程抽象为一个确定的数值，体现微积分超越初等数学、超越穷竭法的根本标志。掌握极限思想，方能真正理解微积分"研究变量"的本质特征。
+
+
+
